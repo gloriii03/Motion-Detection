@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Detection</title>
+    <!-- Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="main-grid">
+            <!-- Left Column: Video & Stats -->
+            <div class="left-col">
+                <!-- Video Display Area -->
+                <div class="panel video-panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-video"></i> Live Feed</h2>
+                        <span id="camStatus" class="status-indicator off"><i class="fa-solid fa-circle"></i> Off</span>
+                    </div>
+                    <div class="video-box" id="videoBox">
+                        <video id="camVideo" autoplay playsinline muted></video>
+                        <canvas id="diffCanvas"></canvas>
+                        <div class="motion-highlight" id="motionHighlight">
+                            <span class="highlight-label">MOTION DETECTED</span>
+                        </div>
+
+                        <!-- Loading overlay -->
+                        <div class="loading-overlay hidden" id="loadingOverlay">
+                            <div class="spinner"></div>
+                            <p>Initializing Optical Sensors...</p>
+                        </div>
+
+                        <!-- Idle overlay -->
+                        <div class="idle-overlay" id="idleOverlay">
+                            <i class="fa-solid fa-camera-retro"></i>
+                            <p>Camera is offline. Start feed to begin.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Panel -->
+                <div class="panel stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="stat-info">
+                                <span class="label-text">Motion Status</span>
+                                <span id="motionStatusText" class="value-text">No Motion</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                            <div class="stat-info">
+                                <span class="label-text">Frame Rate</span>
+                                <span class="value-text"><span id="fpsValue">0</span> FPS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Motion Score Bar -->
+                    <div class="motion-meter">
+                        <div class="meter-header">
+                            <span class="label-text">Motion Intensity</span>
+                            <span id="motionScoreValue" class="meter-value">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="motionBarFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Controls & Logs -->
+            <div class="right-col">
+                <!-- Controls Panel -->
+                <div class="panel controls-panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-sliders"></i> System Parameters</h2>
+                    </div>
+
+                    <div class="button-row">
+                        <button id="startCameraBtn" class="btn btn-primary">
+                            <i class="fa-solid fa-play"></i> Start Feed
+                        </button>
+                        <button id="stopCameraBtn" class="btn btn-danger" disabled>
+                            <i class="fa-solid fa-stop"></i> Stop Feed
+                        </button>
+                    </div>
+
+                    <div class="sliders-container">
+                        <!-- Sensitivity Control -->
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="sensitivityRange">Detection Sensitivity</label>
+                                <span id="sensitivityDisplay" class="value-badge">25</span>
+                            </div>
+                            <input type="range" id="sensitivityRange" min="5" max="100" value="25">
+                            <span class="hint-text">Lower value = Higher sensitivity</span>
+                        </div>
+
+                        <!-- Human Delay Control -->
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="delayRange">Human Reaction Delay</label>
+                                <span id="delayDisplay" class="value-badge">400ms</span>
+                            </div>
+                            <input type="range" id="delayRange" min="100" max="1000" value="400" step="50">
+                        </div>
+
+                        <!-- Motion Threshold -->
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label for="thresholdRange">Area Threshold</label>
+                                <span id="thresholdDisplay" class="value-badge">500</span>
+                            </div>
+                            <input type="range" id="thresholdRange" min="50" max="5000" value="500">
+                            <span class="hint-text">Minimum pixels changed to trigger</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log Section -->
+                <div class="panel log-panel">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-terminal"></i> Activity Log</h2>
+                        <button id="clearLogBtn" class="btn-icon" title="Clear Logs">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <div class="log-box" id="logBox">
+                        <div class="log-placeholder">Waiting for events...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Computer Vision Core V2.0 &bull; PBL Project</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
