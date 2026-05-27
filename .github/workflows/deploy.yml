@@ -52,7 +52,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Configuring GitHub Pages to serve from 'gh-pages' branch..."
-          curl -s -X PUT -H "Accept: application/vnd.github+json" \
-            -H "Authorization: token ${GITHUB_TOKEN}" \
+          resp_file=$(mktemp)
+          http_code=$(curl -s -o "$resp_file" -w "%{http_code}" -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             https://api.github.com/repos/${{ github.repository }}/pages \
-            -d '{"source":{"branch":"gh-pages","path":"/"}}' || true
+            -d '{"source":{"branch":"gh-pages","path":"/"}}' || true)
+          echo "Pages API HTTP status: $http_code"
+          echo "Pages API response:"; cat "$resp_file" || true
+          rm -f "$resp_file"
