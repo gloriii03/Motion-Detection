@@ -23,7 +23,7 @@ const MotionStats = ({ motionStatus, fps, motionScore }: MotionStatsProps) => {
           <p className="status-card-inline-note">Response quality is optimized for live detection.</p>
         </div>
         <div className="status-card-inline-meta">
-          <span className="status-indicator-chip">{isMotionDetected ? 'DETECTED' : 'CLEAR'}</span>
+          <span className={`status-indicator-chip ${statusTheme}`}>{isMotionDetected ? 'DETECTED' : 'CLEAR'}</span>
         </div>
       </div>
 
