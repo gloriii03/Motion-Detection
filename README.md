@@ -1,98 +1,123 @@
-# 🎥 Motion Detection System
+# 🎥 Motion Detection Dashboard
 
-An intelligent and lightweight **Motion Detection System** built using Python and OpenCV.
-This project detects real-time motion through a webcam and highlights moving objects with bounding boxes.
+A browser-based **motion detection dashboard** built with **React**, **TypeScript**, and **Vite**.
+The app uses the webcam feed and in-browser frame differencing to detect motion, display an active preview, highlight moving regions, and log detection events.
 
 ---
 
-## 🚀 How it Works
+## 🚀 Project Summary
 
-```
-📷 Camera Input → 🎞️ Frame Processing → 🔍 Motion Detection → 📦 Object Highlight
-```
+This project is a visual motion monitoring system designed for real-time webcam surveillance.
+It captures frames from the user camera, compares them frame-to-frame, and identifies motion by measuring pixel changes.
+The system exposes live controls for sensitivity, motion threshold, and delay, plus a modern dashboard UI for status and logs.
 
 ---
 
 ## ✨ Features
 
-* 📸 Real-time webcam feed
-* 🧠 Motion detection using frame differencing
-* 📦 Bounding box around moving objects
-* ⚡ Lightweight & fast processing
-* 🛠️ Easy to run and modify
+* 📹 Live webcam feed with motion overlay
+* 🧠 Real-time motion detection using canvas pixel differencing
+* 🎛️ Adjustable detection sensitivity, reaction delay, and motion threshold
+* 📊 Motion intensity score and FPS display
+* 📝 Event activity log with timestamps
+* ⌨️ Keyboard shortcuts for start, stop, clear logs, and help
+* 🌐 Built as a React + TypeScript + Vite app
 
 ---
 
 ## 🧩 Tech Stack
 
-| Technology | Usage            |
-| ---------- | ---------------- |
-| Python 🐍  | Core programming |
-| OpenCV 👁️ | Image processing |
-| NumPy 🔢   | Array operations |
+| Technology | Purpose |
+| ---------- | ------- |
+| React | UI components and state management |
+| TypeScript | Type-safe development |
+| Vite | Fast development server and build tooling |
+| Browser Media APIs | Webcam access via `getUserMedia()` |
+| HTML5 Canvas | Frame capture and motion analysis |
 
 ---
 
-## 📂 Project Structure
+## 📁 Project Structure
 
 ```
 Motion-Detection/
-│── main.py
-│── README.md
+├── README.md
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── style.css
+└── src/
+    ├── App.tsx
+    ├── main.tsx
+    ├── vite-env.d.ts
+    ├── hooks/
+    │   └── useMotionDetection.ts
+    └── components/
+        ├── ActivityLog.tsx
+        ├── MotionControls.tsx
+        ├── MotionStats.tsx
+        ├── VideoFeed.tsx
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## 🚀 Installation and Running
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Install dependencies
 
 ```bash
-git clone https://github.com/gloriii03/Motion-Detection.git
-cd Motion-Detection
+npm install
 ```
 
-### 2️⃣ Install Dependencies
+### 2️⃣ Run development server
 
 ```bash
-pip install opencv-python numpy
+npm run dev
 ```
 
-### 3️⃣ Run the Project
+### 3️⃣ Open the app
 
-```bash
-python main.py
-```
+Open the local Vite URL shown in the terminal, usually `http://localhost:5173`.
 
 ---
 
-## 🎯 How It Works
+## 🧠 How It Works
 
-<details>
-<summary>👉 Click to Expand Explanation</summary>
+The motion detection algorithm in `src/hooks/useMotionDetection.ts` follows these steps:
 
-1. Capture video using webcam
-2. Convert frames to grayscale
-3. Apply Gaussian blur to reduce noise
-4. Compute difference between frames
-5. Apply threshold to highlight motion
-6. Detect contours
-7. Draw rectangles around moving objects
-
-</details>
+1. Request webcam access with `navigator.mediaDevices.getUserMedia()`.
+2. Render video frames into a hidden canvas.
+3. Compare current frame pixel data to the previous frame.
+4. Measure RGB pixel differences and accumulate changed pixels.
+5. Use a grid-based filter to reduce noise and compute a bounding region.
+6. Trigger motion when the changed area exceeds the configured threshold.
+7. Log motion events and display a motion highlight overlay.
 
 ---
 
-## 📸 Output Preview
+## 🧩 Key Components
 
-> Motion is detected and highlighted in real-time.
+* `src/App.tsx` — Main dashboard and state manager
+* `src/hooks/useMotionDetection.ts` — Motion detection loop and webcam control
+* `src/components/VideoFeed.tsx` — Video display and motion highlight overlay
+* `src/components/MotionStats.tsx` — Motion status, FPS, and intensity controls
+* `src/components/MotionControls.tsx` — Start/stop buttons and slider controls
+* `src/components/ActivityLog.tsx` — Event log panel
 
 ---
 
-## 🔥 Future Improvements
+## 📌 Available Scripts
 
-* 🎥 Record video when motion detected
-* 🔔 Add alert system (sound/email)
-* 🌐 Create web dashboard (HTML + JS)
-* 🤖 Integrate AI object detection
+* `npm run dev` — Start Vite dev server
+* `npm run build` — Build production bundle
+* `npm run preview` — Preview production build locally
+* `npm run deploy` — Deploy site using `gh-pages`
+
+---
+
+## 💡 Notes
+
+The current repository content is a React/Vite web application, not the Python/OpenCV implementation described previously.
+This README has been updated to reflect the actual web-based motion detection dashboard.
 
