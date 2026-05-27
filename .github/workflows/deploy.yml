@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +28,15 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Debug runner environment
+        run: |
+          echo "Runner info:";
+          uname -a || ver;
+          echo "\nGit version:"; git --version || true;
+          echo "\nWorkspace files:"; ls -la;
+          echo "\nGit status:"; git status || true;
+          echo "\nGit remotes:"; git remote -v || true;
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
