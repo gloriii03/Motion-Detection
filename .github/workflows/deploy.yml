@@ -42,22 +42,40 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_PAT: ${{ secrets.PERSONAL_PAT }}
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "github-actions[bot]"
-          npx --yes gh-pages -d dist -r "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          PUBLISH_TOKEN="$PERSONAL_PAT"
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            PUBLISH_TOKEN="$GITHUB_TOKEN"
+          fi
+          echo "Using token length: ${#PUBLISH_TOKEN} (masked)"
+          npx --yes gh-pages -d dist -r "https://x-access-token:${PUBLISH_TOKEN}@github.com/${{ github.repository }}.git"
 
       - name: Ensure GitHub Pages site is configured
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_PAT: ${{ secrets.PERSONAL_PAT }}
         run: |
           echo "Configuring GitHub Pages to serve from 'gh-pages' branch..."
+          PUBLISH_TOKEN="$PERSONAL_PAT"
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            PUBLISH_TOKEN="$GITHUB_TOKEN"
+          fi
+          echo "Using token source: ${PERSONAL_PAT:+PERSONAL_PAT}${PERSONAL_PAT:+ }${GITHUB_TOKEN:+GITHUB_TOKEN}"
           resp_file=$(mktemp)
           http_code=$(curl -s -o "$resp_file" -w "%{http_code}" -X PUT \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Authorization: Bearer ${PUBLISH_TOKEN}" \
             https://api.github.com/repos/${{ github.repository }}/pages \
             -d '{"source":{"branch":"gh-pages","path":"/"}}' || true)
-          echo "Pages API HTTP status: $http_code"
-          echo "Pages API response:"; cat "$resp_file" || true
+          echo "Pages API PUT HTTP status: $http_code"
+          echo "Pages API PUT response:"; cat "$resp_file" || true
+          verify_http_code=$(curl -s -o "$resp_file" -w "%{http_code}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${PUBLISH_TOKEN}" \
+            https://api.github.com/repos/${{ github.repository }}/pages || true)
+          echo "Pages API GET HTTP status: $verify_http_code"
+          echo "Pages API GET response:"; cat "$resp_file" || true
           rm -f "$resp_file"
