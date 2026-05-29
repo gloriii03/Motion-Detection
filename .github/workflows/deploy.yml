@@ -38,23 +38,14 @@ jobs:
           echo "\nGit status:"; git status || true;
           echo "\nGit remotes:"; git remote -v || true;
 
-      - name: Publish to GitHub Pages (gh-pages)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_PAT: ${{ secrets.PERSONAL_PAT }}
-        run: |
-          set -x
-          git config --global user.email "actions@github.com"
-          git config --global user.name "github-actions[bot]"
-          git remote -v || true
-          git branch -av || true
-          PUBLISH_TOKEN="$PERSONAL_PAT"
-          if [ -z "$PUBLISH_TOKEN" ]; then
-            PUBLISH_TOKEN="$GITHUB_TOKEN"
-          fi
-          echo "Using token length: ${#PUBLISH_TOKEN} (masked)"
-          GIT_TRACE=1 GIT_CURL_VERBOSE=1 npx --yes gh-pages -d dist -r "https://x-access-token:${PUBLISH_TOKEN}@github.com/${{ github.repository }}.git"
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.PERSONAL_PAT || secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: actions@github.com
 
       - name: Ensure GitHub Pages site is configured
         env:
