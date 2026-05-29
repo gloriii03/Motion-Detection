@@ -44,14 +44,17 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_PAT: ${{ secrets.PERSONAL_PAT }}
         run: |
+          set -x
           git config --global user.email "actions@github.com"
           git config --global user.name "github-actions[bot]"
+          git remote -v || true
+          git branch -av || true
           PUBLISH_TOKEN="$PERSONAL_PAT"
           if [ -z "$PUBLISH_TOKEN" ]; then
             PUBLISH_TOKEN="$GITHUB_TOKEN"
           fi
           echo "Using token length: ${#PUBLISH_TOKEN} (masked)"
-          npx --yes gh-pages -d dist -r "https://x-access-token:${PUBLISH_TOKEN}@github.com/${{ github.repository }}.git"
+          GIT_TRACE=1 GIT_CURL_VERBOSE=1 npx --yes gh-pages -d dist -r "https://x-access-token:${PUBLISH_TOKEN}@github.com/${{ github.repository }}.git"
 
       - name: Ensure GitHub Pages site is configured
         env:
